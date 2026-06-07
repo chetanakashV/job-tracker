@@ -72,19 +72,19 @@
 
       var t=document.title;
 
-      // Format 1: "Role | Company | LinkedIn"  (dedicated /jobs/view/ page)
-      var m=t.match(/^(.+?)\\s*\\|\\s*(.+?)\\s*\\|/);
+      // Format 1: "Role | Company | ..." — match anything-except-pipe segments
+      var m=t.match(/^([^|]+)\\s*[|]\\s*([^|]+)\\s*[|]/);
       if(m){r=m[1].trim();c=m[2].trim();}
 
-      // Format 2: "Role at Company ..." fallback
+      // Format 2: "Role at Company" fallback
       if(!r||!c){
-        var m2=t.match(/^(.+?)\\s+at\\s+(.+?)(?:\\s*[|]|$)/i);
+        var m2=t.match(/^([^|]+?)\\s+at\\s+([^|]+?)(?:\\s*[|]|$)/i);
         if(m2){r=m2[1].trim();c=m2[2].trim();}
       }
 
       // Format 3: "Company hiring Role" fallback
       if(!r||!c){
-        var m3=t.match(/^(.+?)\\s+hiring\\s+(.+?)(?:\\s*[|]|$)/i);
+        var m3=t.match(/^([^|]+?)\\s+hiring\\s+([^|]+?)(?:\\s*[|]|$)/i);
         if(m3){c=c||m3[1].trim();r=r||m3[2].trim();}
       }
 
