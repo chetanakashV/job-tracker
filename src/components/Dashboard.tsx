@@ -89,6 +89,7 @@ export default function Dashboard({ user, prefill }: Props) {
         <div className={styles.headerLeft}>
           <span className={styles.logo}>💼</span>
           <span className={styles.brand}>JobTracker</span>
+          <span className={styles.version}>v{__APP_VERSION__}</span>
         </div>
         <nav className={styles.tabs}>
           <button
