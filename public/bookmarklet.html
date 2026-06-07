@@ -60,74 +60,45 @@
   </div>
 
   <script>
-    // Build the bookmarklet inline so the URL stays correct
     var APP = 'https://job-tracker-brown-theta.vercel.app/';
 
+    // IMPORTANT: inside a template literal, \s becomes s and \| becomes |
+    // — all regex backslashes must be doubled (\\s, \\|, \\u2013 etc.)
     var code = `(function(){
-      var h=location.href,s='',c='',r='',loc='';
+      var h=location.href,s='',c='',r='';
 
-      function q(selectors){
-        for(var i=0;i<selectors.length;i++){
-          var el=document.querySelector(selectors[i]);
-          if(el&&el.innerText.trim())return el.innerText.trim();
-        }
-        return '';
-      }
+      if(h.includes('linkedin.com'))s='LinkedIn';
+      else if(h.includes('instahyre.com'))s='Instahyre';
 
-      if(h.includes('linkedin.com')){
-        s='LinkedIn';
-        // Works on both /jobs/view/ AND /jobs/search/ split-view panel
-        r=q([
-          '.job-details-jobs-unified-top-card__job-title h1',
-          '.job-details-jobs-unified-top-card__job-title h2',
-          'h2.t-24.t-bold.inline',
-          'h1.t-24.t-bold',
-          '.jobs-unified-top-card__job-title h1',
-          '.jobs-unified-top-card__job-title h2',
-          'h1[class*="job-title"]',
-          'h2[class*="job-title"]',
-          'h1[class*="topcard"]',
-          'h1','h2'
-        ]);
-        c=q([
-          '.job-details-jobs-unified-top-card__company-name a',
-          '.jobs-unified-top-card__company-name a',
-          '.job-details-jobs-unified-top-card__primary-description-without-tagline a',
-          '.jobs-unified-top-card__subtitle-primary-grouping a',
-          'a[class*="topcard__org-name-link"]',
-          '[class*="company-name"] a',
-          '[class*="company-name"]'
-        ]);
-        loc=q([
-          '.job-details-jobs-unified-top-card__bullet',
-          '.jobs-unified-top-card__bullet',
-          '[class*="topcard__flavor--bullet"]',
-          '[class*="unified-top-card__workplace-type"]'
-        ]);
-      } else if(h.includes('instahyre.com')){
-        s='Instahyre';
-        r=q(['h1[class*="job"]','h1[class*="title"]','h1']);
-        c=q([
-          '[class*="company-name"] a','[class*="company_name"] a',
-          '[class*="company-name"]','[class*="company_name"]',
-          '[class*="employer-name"]','[class*="employer"]'
-        ]);
-        loc=q(['[class*="location"]','[class*="city"]']);
-      }
+      var t=document.title;
 
-      // Parse page title — try multiple formats
+      // Format 1: "Role | Company | LinkedIn"  (dedicated /jobs/view/ page)
+      var m=t.match(/^(.+?)\\s*\\|\\s*(.+?)\\s*\\|/);
+      if(m){r=m[1].trim();c=m[2].trim();}
+
+      // Format 2: "Role at Company ..." fallback
       if(!r||!c){
-        var t2=document.title;
-        // "Role | Company | LinkedIn"
-        var m=t2.match(/^(.+?)\s*\|\s*(.+?)\s*\|\s*LinkedIn/i);
-        // "Role at Company | ..."
-        if(!m)m=t2.match(/^(.+?)\s+(?:at|@)\s+(.+?)(?:\s*[|\-–]|$)/i);
-        // "Company hiring Role | LinkedIn"
-        if(!m){var m2=t2.match(/^(.+?)\s+hiring\s+(.+?)\s*\|/i);if(m2){c=c||m2[1].trim();r=r||m2[2].trim();}}
-        if(m){if(!r)r=m[1].trim();if(!c)c=m[2].trim();}
+        var m2=t.match(/^(.+?)\\s+at\\s+(.+?)(?:\\s*[|]|$)/i);
+        if(m2){r=m2[1].trim();c=m2[2].trim();}
       }
 
-      var p=new URLSearchParams({add:'1',company:c,role:r,url:h,source:s,location:loc});
+      // Format 3: "Company hiring Role" fallback
+      if(!r||!c){
+        var m3=t.match(/^(.+?)\\s+hiring\\s+(.+?)(?:\\s*[|]|$)/i);
+        if(m3){c=c||m3[1].trim();r=r||m3[2].trim();}
+      }
+
+      // Instahyre DOM fallback (title rarely has "at" format)
+      if(s==='Instahyre'&&(!r||!c)){
+        var el=document.querySelector('h1');
+        var co=document.querySelector('[class*="company"]');
+        if(el)r=el.innerText.trim();
+        if(co)c=co.innerText.trim();
+      }
+
+      if(!r&&!c){alert('Could not read job details from this page.');return;}
+
+      var p=new URLSearchParams({add:'1',company:c,role:r,url:h,source:s});
       window.open('${APP}?'+p.toString(),'_blank');
     })();`;
 
