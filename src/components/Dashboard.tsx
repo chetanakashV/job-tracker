@@ -4,6 +4,7 @@ import { signOut } from 'firebase/auth';
 import { auth } from '../firebase';
 import { useApps } from '../hooks/useApps';
 import { useResumes } from '../hooks/useResumes';
+import { useSources } from '../hooks/useSources';
 import AppCard from './AppCard';
 import AppForm from './AppForm';
 import ResumesPage from './ResumesPage';
@@ -28,9 +29,12 @@ const FILTERS: { label: string; value: Filter }[] = [
 export default function Dashboard({ user }: Props) {
   const { apps, loading, error, addApp, updateApp, deleteApp } = useApps(user.uid);
   const { resumes, addResume, renameResume, deleteResume } = useResumes(user.uid);
+  const { sources, addSource } = useSources(user.uid);
   const [tab, setTab] = useState<Tab>('jobs');
   const [filter, setFilter] = useState<Filter>('all');
   const [search, setSearch] = useState('');
+  const [dateFrom, setDateFrom] = useState('');
+  const [dateTo, setDateTo] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState<JobApplication | null>(null);
 
@@ -38,6 +42,8 @@ export default function Dashboard({ user }: Props) {
     if (filter !== 'all' && a.status !== filter) return false;
     const q = search.toLowerCase();
     if (q && !a.company.toLowerCase().includes(q) && !a.role.toLowerCase().includes(q)) return false;
+    if (dateFrom && a.dateApplied && a.dateApplied < dateFrom) return false;
+    if (dateTo && a.dateApplied && a.dateApplied > dateTo) return false;
     return true;
   });
 
@@ -140,6 +146,17 @@ export default function Dashboard({ user }: Props) {
             <button className={styles.addBtn} onClick={openAdd}>+ Log job</button>
           </div>
 
+          {/* Date range */}
+          <div className={styles.dateRow}>
+            <span className={styles.dateLabel}>From</span>
+            <input type="date" className={styles.dateInput} value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} />
+            <span className={styles.dateLabel}>To</span>
+            <input type="date" className={styles.dateInput} value={dateTo} onChange={(e) => setDateTo(e.target.value)} />
+            {(dateFrom || dateTo) && (
+              <button className={styles.clearDate} onClick={() => { setDateFrom(''); setDateTo(''); }}>✕ Clear</button>
+            )}
+          </div>
+
           {/* Filters */}
           <div className={styles.filtersWrap}>
             <div className={styles.filters}>
@@ -184,6 +201,8 @@ export default function Dashboard({ user }: Props) {
         <AppForm
           initial={editing}
           resumes={resumes}
+          sources={sources}
+          onAddSource={addSource}
           onSubmit={handleSubmit}
           onClose={() => setModalOpen(false)}
         />

@@ -85,6 +85,40 @@
 
 .req { color: var(--rejected); }
 
+/* Inline new source */
+.newSourceRow {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.newSourceInput {
+  flex: 1;
+  font-size: 14px;
+}
+
+.newSourceSave {
+  background: var(--accent);
+  color: #fff;
+  padding: 8px 12px;
+  font-size: 12px;
+  min-height: 40px;
+  flex-shrink: 0;
+}
+
+.newSourceSave:hover { background: var(--accent-hover); }
+
+.newSourceCancel {
+  background: var(--surface2);
+  color: var(--text-muted);
+  padding: 8px 10px;
+  font-size: 14px;
+  min-height: 40px;
+  flex-shrink: 0;
+}
+
+.newSourceCancel:hover { color: var(--text); }
+
 .formActions {
   display: flex;
   gap: 10px;
