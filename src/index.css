@@ -8,10 +8,13 @@
   --accent: #5c6af6;
   --accent-hover: #6e7cf8;
 
-  --live: #22c55e;
-  --staging: #f59e0b;
-  --down: #ef4444;
-  --maintenance: #6b7280;
+  --applied: #5c6af6;
+  --screening: #f59e0b;
+  --interview: #a855f7;
+  --offer: #22c55e;
+  --rejected: #ef4444;
+  --ghosted: #6b7280;
+  --withdrawn: #94a3b8;
 
   font-family: 'Inter', system-ui, sans-serif;
   font-size: 14px;
@@ -21,9 +24,17 @@
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-body { background: var(--bg); color: var(--text); min-height: 100vh; }
+html { -webkit-text-size-adjust: 100%; }
 
-#root { min-height: 100vh; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  min-height: 100dvh;
+  overscroll-behavior-y: none;
+}
+
+#root { min-height: 100vh; min-height: 100dvh; }
 
 button {
   cursor: pointer;
@@ -33,6 +44,8 @@ button {
   font-weight: 500;
   padding: 8px 14px;
   transition: background 0.15s, opacity 0.15s;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 
 button:disabled { opacity: 0.5; cursor: not-allowed; }
@@ -42,11 +55,13 @@ input, textarea, select {
   border: 1px solid var(--border);
   border-radius: 6px;
   color: var(--text);
-  font-size: 13px;
-  padding: 8px 10px;
+  font-size: 16px; /* 16px prevents iOS zoom on focus */
+  padding: 10px 12px;
   width: 100%;
   outline: none;
   transition: border-color 0.15s;
+  -webkit-appearance: none;
+  appearance: none;
 }
 
 input:focus, textarea:focus, select:focus { border-color: var(--accent); }

@@ -10,9 +10,9 @@ export default function Login() {
   return (
     <div className={styles.wrap}>
       <div className={styles.card}>
-        <div className={styles.logo}>⬡</div>
-        <h1 className={styles.title}>AppTracker</h1>
-        <p className={styles.sub}>Monitor all your deployments in one place</p>
+        <div className={styles.logo}>💼</div>
+        <h1 className={styles.title}>JobTracker</h1>
+        <p className={styles.sub}>Track every application, interview, and offer in one place</p>
         <button className={styles.btn} onClick={handleSignIn}>
           <GoogleIcon />
           Sign in with Google

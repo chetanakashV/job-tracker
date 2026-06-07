@@ -11,11 +11,12 @@ import {
   orderBy,
 } from 'firebase/firestore';
 import { db } from '../firebase';
-import type { TrackedApp, AppFormData } from '../types/app';
+import type { JobApplication, JobFormData } from '../types/app';
 
 export function useApps(uid: string) {
-  const [apps, setApps] = useState<TrackedApp[]>([]);
+  const [apps, setApps] = useState<JobApplication[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const q = query(
@@ -23,24 +24,33 @@ export function useApps(uid: string) {
       orderBy('createdAt', 'desc')
     );
 
-    const unsub = onSnapshot(q, (snap) => {
-      setApps(
-        snap.docs.map((d) => ({ id: d.id, ...(d.data() as Omit<TrackedApp, 'id'>) }))
-      );
-      setLoading(false);
-    });
+    const unsub = onSnapshot(
+      q,
+      (snap) => {
+        setApps(
+          snap.docs.map((d) => ({ id: d.id, ...(d.data() as Omit<JobApplication, 'id'>) }))
+        );
+        setLoading(false);
+        setError(null);
+      },
+      (err) => {
+        console.error('Firestore error:', err);
+        setError(err.message);
+        setLoading(false);
+      }
+    );
 
     return unsub;
   }, [uid]);
 
-  async function addApp(data: AppFormData) {
+  async function addApp(data: JobFormData) {
     await addDoc(collection(db, `users/${uid}/apps`), {
       ...data,
       createdAt: serverTimestamp(),
     });
   }
 
-  async function updateApp(id: string, data: AppFormData) {
+  async function updateApp(id: string, data: JobFormData) {
     await updateDoc(doc(db, `users/${uid}/apps/${id}`), { ...data });
   }
 
@@ -48,5 +58,5 @@ export function useApps(uid: string) {
     await deleteDoc(doc(db, `users/${uid}/apps/${id}`));
   }
 
-  return { apps, loading, addApp, updateApp, deleteApp };
+  return { apps, loading, error, addApp, updateApp, deleteApp };
 }

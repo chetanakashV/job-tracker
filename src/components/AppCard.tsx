@@ -1,17 +1,29 @@
-import type { TrackedApp } from '../types/app';
+import type { JobApplication } from '../types/app';
 import styles from './AppCard.module.css';
 
 interface Props {
-  app: TrackedApp;
-  onEdit: (app: TrackedApp) => void;
+  app: JobApplication;
+  onEdit: (app: JobApplication) => void;
   onDelete: (id: string) => void;
 }
 
-const STATUS_LABEL: Record<TrackedApp['status'], string> = {
-  live: 'Live',
-  staging: 'Staging',
-  down: 'Down',
-  maintenance: 'Maintenance',
+const STATUS_LABEL: Record<JobApplication['status'], string> = {
+  applied: 'Applied',
+  screening: 'Screening',
+  interview: 'Interview',
+  offer: 'Offer',
+  rejected: 'Rejected',
+  ghosted: 'Ghosted',
+  withdrawn: 'Withdrawn',
+};
+
+const SOURCE_ICON: Record<string, string> = {
+  LinkedIn: '💼',
+  Indeed: '🔍',
+  Referral: '🤝',
+  'Company Website': '🌐',
+  AngelList: '🚀',
+  Other: '📌',
 };
 
 export default function AppCard({ app, onEdit, onDelete }: Props) {
@@ -19,35 +31,54 @@ export default function AppCard({ app, onEdit, onDelete }: Props) {
     <div className={styles.card}>
       <div className={styles.header}>
         <div className={styles.titleRow}>
-          <span className={styles.name}>{app.name}</span>
+          <div className={styles.titleBlock}>
+            <span className={styles.company}>{app.company}</span>
+            <span className={styles.role}>{app.role}</span>
+          </div>
           <span className={`${styles.badge} ${styles[app.status]}`}>
             <span className={styles.dot} />
             {STATUS_LABEL[app.status]}
           </span>
         </div>
-        {app.url && (
-          <a
-            href={app.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.url}
-          >
-            {app.url.replace(/^https?:\/\//, '')}
-          </a>
-        )}
       </div>
 
       <div className={styles.meta}>
-        {app.techStack && (
+        {app.dateApplied && (
           <div className={styles.metaRow}>
-            <span className={styles.metaLabel}>Stack</span>
-            <span>{app.techStack}</span>
+            <span className={styles.metaIcon}>📅</span>
+            <span>{app.dateApplied}</span>
           </div>
         )}
-        {app.lastDeployed && (
+        {app.location && (
           <div className={styles.metaRow}>
-            <span className={styles.metaLabel}>Deployed</span>
-            <span>{app.lastDeployed}</span>
+            <span className={styles.metaIcon}>📍</span>
+            <span>{app.location}</span>
+          </div>
+        )}
+        {app.salaryRange && (
+          <div className={styles.metaRow}>
+            <span className={styles.metaIcon}>💰</span>
+            <span>{app.salaryRange}</span>
+          </div>
+        )}
+        {app.source && (
+          <div className={styles.metaRow}>
+            <span className={styles.metaIcon}>{SOURCE_ICON[app.source] ?? '📌'}</span>
+            <span>{app.source}</span>
+          </div>
+        )}
+        {app.jobUrl && (
+          <div className={styles.metaRow}>
+            <span className={styles.metaIcon}>🔗</span>
+            <a href={app.jobUrl} target="_blank" rel="noopener noreferrer" className={styles.link}>
+              View posting
+            </a>
+          </div>
+        )}
+        {app.resumeName && (
+          <div className={styles.metaRow}>
+            <span className={styles.metaIcon}>📎</span>
+            <span>{app.resumeName}</span>
           </div>
         )}
         {app.notes && (

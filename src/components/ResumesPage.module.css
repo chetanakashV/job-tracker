@@ -1,0 +1,177 @@
+.page {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 600px;
+  margin: 0 auto;
+  padding-bottom: 88px;
+}
+
+@media (min-width: 640px) {
+  .page { padding: 24px; padding-bottom: 24px; }
+}
+
+.topBar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.heading {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+  flex: 1;
+}
+
+.zipBtn {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: 12px;
+  padding: 7px 12px;
+  min-height: 34px;
+  white-space: nowrap;
+}
+
+.zipBtn:hover { color: var(--text); border-color: #3e3e4e; }
+
+/* Zip preview box */
+.zipBox {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.zipTitle {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.zipList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 240px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.zipInput {
+  font-size: 13px;
+  padding: 7px 10px;
+}
+
+.zipActions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.cancelBtn {
+  background: var(--surface2);
+  color: var(--text-muted);
+  padding: 8px 14px;
+  min-height: 38px;
+}
+
+.cancelBtn:hover { color: var(--text); }
+
+.hint {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin-top: -4px;
+}
+
+/* Add row */
+.addRow {
+  display: flex;
+  gap: 8px;
+}
+
+.addInput { flex: 1; }
+
+.addBtn {
+  background: var(--accent);
+  color: #fff;
+  padding: 10px 18px;
+  min-height: 44px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.addBtn:hover:not(:disabled) { background: var(--accent-hover); }
+
+/* List */
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.itemIcon { font-size: 18px; flex-shrink: 0; }
+
+.itemName {
+  flex: 1;
+  font-size: 14px;
+  color: var(--text);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.renameInput {
+  flex: 1;
+  font-size: 14px;
+  padding: 6px 10px;
+}
+
+.itemActions {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.renameBtn {
+  background: var(--surface2);
+  color: var(--text-muted);
+  font-size: 12px;
+  padding: 6px 10px;
+  min-height: 32px;
+}
+
+.renameBtn:hover { color: var(--text); }
+
+.deleteBtn {
+  background: rgba(239,68,68,0.08);
+  color: var(--rejected);
+  font-size: 12px;
+  padding: 6px 10px;
+  min-height: 32px;
+}
+
+.deleteBtn:hover { background: rgba(239,68,68,0.18); }
+
+.empty {
+  color: var(--text-muted);
+  text-align: center;
+  padding: 48px 0;
+  font-size: 14px;
+}

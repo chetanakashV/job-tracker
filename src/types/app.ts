@@ -1,14 +1,32 @@
-export type AppStatus = 'live' | 'staging' | 'down' | 'maintenance';
+export type AppStatus =
+  | 'applied'
+  | 'screening'
+  | 'interview'
+  | 'offer'
+  | 'rejected'
+  | 'ghosted'
+  | 'withdrawn';
 
-export interface TrackedApp {
+export interface JobApplication {
   id: string;
-  name: string;
-  url: string;
+  company: string;
+  role: string;
   status: AppStatus;
-  techStack: string;
-  lastDeployed: string;
+  dateApplied: string;
+  source: string;
+  location: string;
+  salaryRange: string;
+  jobUrl: string;
+  resumeId: string;
+  resumeName: string;
   notes: string;
   createdAt: number;
 }
 
-export type AppFormData = Omit<TrackedApp, 'id' | 'createdAt'>;
+export interface Resume {
+  id: string;
+  name: string;
+  createdAt: number;
+}
+
+export type JobFormData = Omit<JobApplication, 'id' | 'createdAt'>;
