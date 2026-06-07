@@ -58,6 +58,11 @@ function parseTitle(title: string): { role: string; company: string } {
 function readPrefill(): Prefill | null {
   const p = new URLSearchParams(window.location.search);
 
+  // DEBUG — remove after confirming share target params
+  if (p.toString()) {
+    setTimeout(() => alert('[DEBUG] URL params:\n' + window.location.search), 300);
+  }
+
   // Bookmarklet flow: ?add=1&company=...&role=...
   if (p.get('add') === '1') {
     return {
