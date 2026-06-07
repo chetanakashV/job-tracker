@@ -1,0 +1,132 @@
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  transition: border-color 0.15s;
+}
+
+.card:hover {
+  border-color: #3e3e4e;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.titleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.url {
+  font-size: 12px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.url:hover { color: var(--accent); text-decoration: none; }
+
+/* Status badge */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  padding: 3px 8px;
+  border-radius: 20px;
+  white-space: nowrap;
+  text-transform: uppercase;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.live   { background: rgba(34,197,94,0.12); color: var(--live); }
+.live .dot { background: var(--live); }
+
+.staging { background: rgba(245,158,11,0.12); color: var(--staging); }
+.staging .dot { background: var(--staging); }
+
+.down { background: rgba(239,68,68,0.12); color: var(--down); }
+.down .dot { background: var(--down); }
+
+.maintenance { background: rgba(107,114,128,0.12); color: var(--maintenance); }
+.maintenance .dot { background: var(--maintenance); }
+
+/* Meta section */
+.meta {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.metaRow {
+  display: flex;
+  gap: 8px;
+  font-size: 12px;
+}
+
+.metaLabel {
+  color: var(--text-muted);
+  width: 60px;
+  flex-shrink: 0;
+}
+
+.notes {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin-top: 2px;
+}
+
+/* Actions */
+.actions {
+  display: flex;
+  gap: 8px;
+  margin-top: auto;
+}
+
+.editBtn {
+  background: var(--surface2);
+  color: var(--text);
+  flex: 1;
+  padding: 7px;
+  font-size: 12px;
+}
+
+.editBtn:hover { background: var(--border); }
+
+.deleteBtn {
+  background: rgba(239,68,68,0.08);
+  color: var(--down);
+  flex: 1;
+  padding: 7px;
+  font-size: 12px;
+}
+
+.deleteBtn:hover { background: rgba(239,68,68,0.18); }
