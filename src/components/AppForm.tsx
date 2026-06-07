@@ -1,10 +1,12 @@
 import { useState, useEffect, useRef } from 'react';
 import type { JobApplication, JobFormData, AppStatus, Resume } from '../types/app';
 import type { Source } from '../hooks/useSources';
+import type { Prefill } from '../App';
 import styles from './AppForm.module.css';
 
 interface Props {
   initial?: JobApplication | null;
+  prefill?: Prefill | null;
   resumes: Resume[];
   sources: Source[];
   onAddSource: (name: string) => Promise<Source>;
@@ -38,7 +40,7 @@ const EMPTY: JobFormData = {
   notes: '',
 };
 
-export default function AppForm({ initial, resumes, sources, onAddSource, onSubmit, onClose }: Props) {
+export default function AppForm({ initial, prefill, resumes, sources, onAddSource, onSubmit, onClose }: Props) {
   const [form, setForm] = useState<JobFormData>(EMPTY);
   const [saving, setSaving] = useState(false);
   const [addingSource, setAddingSource] = useState(false);
@@ -51,7 +53,17 @@ export default function AppForm({ initial, resumes, sources, onAddSource, onSubm
       const { id: _id, createdAt: _ca, ...rest } = initial;
       setForm(rest);
     } else {
-      setForm({ ...EMPTY, dateApplied: new Date().toISOString().slice(0, 10) });
+      setForm({
+        ...EMPTY,
+        dateApplied: new Date().toISOString().slice(0, 10),
+        ...(prefill ? {
+          company:  prefill.company,
+          role:     prefill.role,
+          jobUrl:   prefill.jobUrl,
+          source:   prefill.source || 'LinkedIn',
+          location: prefill.location,
+        } : {}),
+      });
     }
   }, [initial]);
 

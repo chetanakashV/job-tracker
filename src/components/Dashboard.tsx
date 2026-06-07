@@ -9,9 +9,13 @@ import AppCard from './AppCard';
 import AppForm from './AppForm';
 import ResumesPage from './ResumesPage';
 import type { JobApplication, JobFormData, AppStatus } from '../types/app';
+import type { Prefill } from '../App';
 import styles from './Dashboard.module.css';
 
-interface Props { user: User }
+interface Props {
+  user: User;
+  prefill?: Prefill | null;
+}
 
 type Tab = 'jobs' | 'resumes';
 type Filter = 'all' | AppStatus;
@@ -26,16 +30,17 @@ const FILTERS: { label: string; value: Filter }[] = [
   { label: 'Ghosted', value: 'ghosted' },
 ];
 
-export default function Dashboard({ user }: Props) {
+export default function Dashboard({ user, prefill }: Props) {
   const { apps, loading, error, addApp, updateApp, deleteApp } = useApps(user.uid);
   const { resumes, addResume, renameResume, deleteResume } = useResumes(user.uid);
   const { sources, addSource } = useSources(user.uid);
   const [tab, setTab] = useState<Tab>('jobs');
   const [filter, setFilter] = useState<Filter>('all');
+  const [sourceFilter, setSourceFilter] = useState('');
   const [search, setSearch] = useState('');
   const [dateFrom, setDateFrom] = useState('');
   const [dateTo, setDateTo] = useState('');
-  const [modalOpen, setModalOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState(() => !!prefill);
   const [editing, setEditing] = useState<JobApplication | null>(null);
 
   const visible = apps.filter((a) => {
@@ -44,6 +49,7 @@ export default function Dashboard({ user }: Props) {
     if (q && !a.company.toLowerCase().includes(q) && !a.role.toLowerCase().includes(q)) return false;
     if (dateFrom && a.dateApplied && a.dateApplied < dateFrom) return false;
     if (dateTo && a.dateApplied && a.dateApplied > dateTo) return false;
+    if (sourceFilter && a.source !== sourceFilter) return false;
     return true;
   });
 
@@ -99,6 +105,15 @@ export default function Dashboard({ user }: Props) {
           </button>
         </nav>
         <div className={styles.headerRight}>
+          <a
+            href="/bookmarklet.html"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.bookmarkletBtn}
+            title="Install bookmarklet to log jobs from LinkedIn / Instahyre"
+          >
+            ⚡ Bookmarklet
+          </a>
           {user.photoURL && <img src={user.photoURL} alt="" className={styles.avatar} />}
           <button className={styles.signOutBtn} onClick={() => signOut(auth)}>Sign out</button>
         </div>
@@ -157,7 +172,7 @@ export default function Dashboard({ user }: Props) {
             )}
           </div>
 
-          {/* Filters */}
+          {/* Status filters */}
           <div className={styles.filtersWrap}>
             <div className={styles.filters}>
               {FILTERS.map((f) => (
@@ -171,6 +186,33 @@ export default function Dashboard({ user }: Props) {
               ))}
             </div>
           </div>
+
+          {/* Source filters — only show sources that have at least one app */}
+          {(() => {
+            const usedSources = [...new Set(apps.map((a) => a.source).filter(Boolean))];
+            if (usedSources.length < 2) return null;
+            return (
+              <div className={styles.filtersWrap}>
+                <div className={styles.filters}>
+                  <button
+                    className={`${styles.filterBtn} ${!sourceFilter ? styles.active : ''}`}
+                    onClick={() => setSourceFilter('')}
+                  >
+                    All sources
+                  </button>
+                  {usedSources.map((s) => (
+                    <button
+                      key={s}
+                      className={`${styles.filterBtn} ${sourceFilter === s ? styles.active : ''}`}
+                      onClick={() => setSourceFilter(s === sourceFilter ? '' : s)}
+                    >
+                      {s}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            );
+          })()}
 
           {/* Cards */}
           {loading ? (
@@ -200,6 +242,7 @@ export default function Dashboard({ user }: Props) {
       {modalOpen && (
         <AppForm
           initial={editing}
+          prefill={editing ? null : prefill}
           resumes={resumes}
           sources={sources}
           onAddSource={addSource}
